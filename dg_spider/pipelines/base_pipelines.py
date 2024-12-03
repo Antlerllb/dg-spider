@@ -6,10 +6,9 @@ from dg_spider.libs.mysql_client import MysqlClient
 
 
 class MysqlPipeline:
-    session: Optional[Session]
-
     def __init__(self):
         self.session = MysqlClient.get_session()
 
     def close_spider(self, spider: BaseSpider):
-        self.session.close()
+        if self.session:
+            self.session.close()

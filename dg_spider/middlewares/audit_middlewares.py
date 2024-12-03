@@ -34,15 +34,20 @@ class AuditNewsMiddleware(BaseStatsMiddleware):
 class AuditFinalMiddleware(BaseStatsMiddleware):
     def spider_closed(self, spider: BaseSpider):
         if spider.args['audit']['enabled']:
-            website_id, audit_id = spider.args['spider']['website_id'], spider.args['audit']['audit_id']
-            with MysqlClient.get_session() as session, session.begin():
-                website_to_update = session.query(Website).filter(Website.id == website_id).first()
-                audit_to_update = session.query(Audit).filter(Audit.id == audit_id).first()
-                if self.stats.get_value('is_audit_passed'):
-                    spider.logger.info(format_log(self, '终审通过'))
-                    website_to_update.status = audit_to_update.result = 'RUNNING'
-                else:
-                    spider.logger.error(format_log(self, '终审不通过'))
-                    website_to_update.status = 'IN_PROGRESS'
-                    audit_to_update.result = 'REJECTED'
-                audit_to_update.audit_time = get_date()
+            # 打印日志
+            if self.stats.get_value('is_audit_passed'):
+                spider.logger.info(format_log(self, '终审通过'))
+            else:
+                spider.logger.error(format_log(self, '终审不通过'))
+            # 持久化
+            if spider.args['audit']['mysql_enabled']:
+                website_id, audit_id = spider.args['spider']['website_id'], spider.args['audit']['audit_id']
+                with MysqlClient.get_session() as session, session.begin():
+                    website_to_update = session.query(Website).filter(Website.id == website_id).first()
+                    audit_to_update = session.query(Audit).filter(Audit.id == audit_id).first()
+                    if self.stats.get_value('is_audit_passed'):
+                        website_to_update.status = audit_to_update.result = 'RUNNING'
+                    else:
+                        website_to_update.status = 'IN_PROGRESS'
+                        audit_to_update.result = 'REJECTED'
+                    audit_to_update.audit_time = get_date()

@@ -8,7 +8,6 @@ from dg_spider.common import USER_AGENT_LIST
 from dg_spider.libs.base_spider import BaseSpider
 from dg_spider.libs.models import News, Setting
 from dg_spider.middlewares.base_middlewares import MysqlMiddleware
-from dg_spider.utils.datetime_utils import get_date
 from dg_spider.utils.format_utils import str_to_md5, format_log
 
 

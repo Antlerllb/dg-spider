@@ -24,7 +24,6 @@ class MysqlClient:
         return session
 
 
-
 if __name__ == '__main__':
     with MysqlClient.get_session() as session, session.begin():
         # res = session.get(Language, 1727).name

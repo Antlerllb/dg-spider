@@ -5,6 +5,7 @@ from dg_spider.libs.base_spider import BaseSpider
 from dg_spider.libs.models import News
 from dg_spider.libs.mysql_client import MysqlClient
 from dg_spider.pipelines.base_pipelines import MysqlPipeline
+from dg_spider.utils.audit_utils import has_json_schema_error
 from dg_spider.utils.datetime_utils import get_date
 from dg_spider.utils.format_utils import str_to_md5, format_log
 
@@ -12,7 +13,11 @@ from dg_spider.utils.format_utils import str_to_md5, format_log
 
 class MysqlNewsPipeline(MysqlPipeline):
     def process_item(self, item: NewsItem, spider: BaseSpider):
-        if spider.is_running and spider.args['spider']['save_to_mysql'] and isinstance(item, NewsItem):
+        if spider.is_running and spider.args['spider']['mysql_enabled'] and isinstance(item, NewsItem):
+            error = has_json_schema_error(dict(item), 'news')
+            if error:
+                spider.logger.error(format_log(self, error, news_url=item['request_url']))
+                return None
             item['md5'] = str_to_md5(item['request_url'])
             item['images'] = json.dumps(item['images'])
             item['cole_time'] = get_date().strftime("%Y-%m-%d %H:%M:%S")

@@ -12,5 +12,4 @@ class SpiderOutputMiddleware(MysqlMiddleware):
                 continue
             i['request_url'] = response.request.url
             i['response_url'] = response.url
-            # i['html'] = response.text
             yield i

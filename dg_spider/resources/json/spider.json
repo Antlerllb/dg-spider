@@ -1,8 +1,8 @@
 {
   "spider": {
 	"website_id": 2268,
-	"started_by_scrapy": true,
-	"save_to_mysql": false
+	"started_by_scrapy": false,
+	"mysql_enabled": false
   },
   "timer": {
 	"enabled": false,
@@ -10,7 +10,8 @@
   },
   "audit": {
 	"enabled": true,
-	"audit_id": 1
+	"audit_id": 1,
+	"mysql_enabled": false
   },
   "proxy": {
 	"enabled": false,

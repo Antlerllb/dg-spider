@@ -1,8 +1,10 @@
 import json
+from typing import Optional
 
 from pylint import modify_sys_path
 from scrapy.exceptions import DropItem, CloseSpider
 
+from dg_spider import my_cfg
 from dg_spider.items import NewsItem
 from dg_spider.libs.base_spider import BaseSpider
 from dg_spider.libs.models import Language, Setting

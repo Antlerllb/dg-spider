@@ -143,7 +143,6 @@ ITEM_PIPELINES = {
    "dg_spider.pipelines.schedule_pipelines.TimerPipeline": 500,
 
    # 持久化
-   "dg_spider.pipelines.verify_pipelines.VerifyNewsPipeline": 550,
    "dg_spider.pipelines.mysql_pipelines.MysqlNewsPipeline": 600,
 
    # 关闭

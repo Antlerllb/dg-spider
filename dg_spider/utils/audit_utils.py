@@ -1,6 +1,7 @@
 import ast
 from io import StringIO
 import cld2
+import requests
 from pylint import lint
 from ast2json import ast2json
 from jsonschema import validate, RefResolver
@@ -73,3 +74,10 @@ def has_py_schema_error(py_path):
     res = has_json_schema_error(ast_node, 'py_ast')
     return res
 
+
+def is_url_accessible(url):
+    try:
+        response = requests.head(url, timeout=3)  # 使用 HEAD 请求，效率较高
+        return response.status_code < 400   # 2xx 和 3xx 状态码表示可达
+    except requests.RequestException as e:
+        return False

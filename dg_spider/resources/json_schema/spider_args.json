@@ -7,9 +7,9 @@
       "properties": {
         "website_id": {"type": "integer"},
         "started_by_scrapy": {"type": "boolean"},
-        "save_to_mysql": {"type": "boolean"}
+        "mysql_enabled": {"type": "boolean"}
       },
-      "required": ["website_id", "started_by_scrapy", "save_to_mysql"]
+      "required": ["website_id", "started_by_scrapy", "mysql_enabled"]
     },
     "timer": {
       "type": "object",
@@ -24,9 +24,10 @@
       "type": "object",
       "properties": {
         "enabled": {"type": "boolean"},
-        "audit_id": {"type": "integer"}
+        "audit_id": {"type": "integer"},
+        "mysql_enabled": {"type": "boolean"}
       },
-      "required": ["enabled", "audit_id"],
+      "required": ["enabled", "audit_id", "mysql_enabled"],
       "additionalProperties": false
     },
     "proxy": {

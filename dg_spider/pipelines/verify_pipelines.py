@@ -12,7 +12,7 @@ from dg_spider.utils.format_utils import format_log
 
 class VerifyNewsPipeline:
     def process_item(self, item: NewsItem, spider: BaseSpider):
-        if spider.is_running and not spider.args['audit']['enabled'] and isinstance(item, NewsItem):
+        if spider.is_running and not spider.args['spider']['save_to_mysql'] and isinstance(item, NewsItem):
             error = has_json_schema_error(dict(item), 'news')
             if error:
                 spider.logger.error(format_log(self, error, news_url=item['request_url']))

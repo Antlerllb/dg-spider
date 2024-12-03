@@ -9,7 +9,8 @@ from dg_spider.utils.datetime_utils import get_date
 from dg_spider.utils.format_utils import str_to_md5, format_log
 
 
-class NewsMysqlPipeline(MysqlPipeline):
+
+class MysqlNewsPipeline(MysqlPipeline):
     def process_item(self, item: NewsItem, spider: BaseSpider):
         if spider.is_running and spider.args['spider']['save_to_mysql'] and isinstance(item, NewsItem):
             item['md5'] = str_to_md5(item['request_url'])

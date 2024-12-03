@@ -8,7 +8,6 @@ from dg_spider.libs.base_spider import BaseSpider
 from dg_spider.libs.models import Language, Setting
 from dg_spider.pipelines.base_pipelines import MysqlPipeline
 from dg_spider.utils.audit_utils import has_json_schema_error, has_lang_error
-from dg_spider.utils.datetime_utils import get_date
 from dg_spider.utils.format_utils import format_log
 
 

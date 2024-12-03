@@ -47,6 +47,6 @@
       "additionalProperties": false
     }
   },
-  "required": ["spider", "db", "timer", "audit", "proxy"],
+  "required": ["spider", "timer", "audit", "proxy"],
   "additionalProperties": false
 }

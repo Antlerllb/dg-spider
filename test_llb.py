@@ -13,11 +13,11 @@ args = {
   "spider": {
 	"website_id": 2268,
 	"started_by_scrapy": True,
-	"save_to_mysql": True
+	"save_to_mysql": False
   },
   "timer": {
 	"enabled": False,
-	"crawl_until_datetime": ""
+	"crawl_until_datetime": "2024-12-03T03:47:39+08:00"
   },
   "audit": {
 	"enabled": True,
@@ -32,6 +32,7 @@ args = {
 	}
   }
 }
+
 
 
 

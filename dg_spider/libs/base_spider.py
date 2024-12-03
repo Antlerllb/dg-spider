@@ -15,8 +15,7 @@ from dg_spider.utils.audit_utils import has_json_schema_error
 from dg_spider.utils.datetime_utils import get_date
 from dg_spider.utils.format_utils import format_log
 from dg_spider.utils.io_utils import read_json
-from dg_spider.utils.log_utils import setup_log_handler, ScrapyInfoFilter
-
+from dg_spider.utils.log_utils import setup_log_handler
 from dg_spider.libs.models import Website, Audit
 
 
@@ -33,11 +32,8 @@ class BaseSpider(scrapy.Spider):
 
     @staticmethod
     def _setup_logging():
-        logging.getLogger().addFilter(ScrapyInfoFilter())
         console_handler = setup_log_handler(logging.StreamHandler())
         logging.getLogger().addHandler(console_handler)
-        for handler in logging.root.handlers:
-            handler.addFilter(ScrapyInfoFilter())
 
     def _setup_args(self, kwargs):
         if kwargs.get('task_id'):
@@ -62,6 +58,8 @@ class BaseSpider(scrapy.Spider):
             while True:
                 time.sleep(timeout_check_interval)
                 last_scraped_datetime = self.crawler.stats.get_value('last_scraped_datetime')
+                if not self.crawler.engine.running:
+                    return
                 if last_scraped_datetime is None:
                     continue
                 elapsed_seconds = (get_date() - last_scraped_datetime).total_seconds()

@@ -1,32 +1,69 @@
-# Scrapy settings for dg_spider project
-#
-# For simplicity, this file contains only settings considered important or
-# commonly used. You can find more settings consulting the documentation:
-#
-#     https://docs.scrapy.org/en/latest/topics/settings.html
-#     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-
-
 import datetime
+import logging
 import os
-
-from dg_spider.libs.models import Setting
-from dg_spider.libs.mysql_client import MysqlClient
 
 BOT_NAME = "dg_spider"
 
 SPIDER_MODULES = ["dg_spider.spiders"]
 NEWSPIDER_MODULE = "dg_spider.spiders"
 
+# 日志文件名
 current_date = datetime.datetime.now().strftime('%Y-%m-%d')
-LOG_FILE = f'logs/{current_date}.log'  # 日志文件名
+LOG_FILE = f'logs/{current_date}.log'
 if not os.path.exists(os.path.dirname(LOG_FILE)):
    os.makedirs(os.path.dirname(LOG_FILE))
 
+
+# 日志过滤器
+class ScrapyInfoFilter(logging.Filter):
+   def filter(self, record):
+      # 过滤掉 Scrapy 自带的 INFO 级别日志
+      return not (record.levelname == 'INFO' and 'scrapy' in record.name)
+
+
 LOG_LEVEL = "INFO"
-LOG_FORMAT = '%(asctime)s.%(msecs)03d [%(levelname)s]: %(message)s'  # 日志格式
+LOG_FORMAT = '%(asctime)s [%(levelname)s]: %(message)s'  # 日志格式
 LOG_DATEFORMAT = '%Y-%m-%d %H:%M:%S'  # 日期格式
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'scrapy_filter': {
+            '()': ScrapyInfoFilter,  # 绑定自定义过滤器
+        },
+    },
+    'formatters': {
+        'standard': {
+            'format': LOG_FORMAT,
+            'datefmt': LOG_DATEFORMAT,
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': LOG_FILE,
+            'formatter': 'standard',
+            'filters': ['scrapy_filter'],  # 应用过滤器
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard',
+            'filters': ['scrapy_filter'],  # 应用过滤器
+        },
+    },
+    'loggers': {
+        'scrapy': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
+
 
 TWISTED_REACTOR = 'twisted.internet.asyncioreactor.AsyncioSelectorReactor'
 

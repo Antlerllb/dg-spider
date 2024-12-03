@@ -1,16 +1,12 @@
 import logging
-from dg_spider.settings import LOG_FORMAT, LOG_DATEFORMAT, LOG_LEVEL, LOG_FILE
+from dg_spider.settings import LOG_FORMAT, LOG_DATEFORMAT, LOG_LEVEL, LOG_FILE, ScrapyInfoFilter
 
-
-class ScrapyInfoFilter(logging.Filter):
-    def filter(self, record):
-        # 过滤掉 Scrapy 自带的 INFO 级别日志
-        return not (record.levelname == 'INFO' and 'scrapy' in record.name)
 
 def setup_log_handler(handler: logging.Handler):
     handler.setLevel(LOG_LEVEL)
     formatter = logging.Formatter(fmt=LOG_FORMAT, datefmt=LOG_DATEFORMAT)
     handler.setFormatter(formatter)
+    handler.addFilter(ScrapyInfoFilter())
     return handler
 
 def get_external_logger():

@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "language_id": {
+      "type": "integer",
+      "description": "语言ID，int整型"
+    },
+    "pub_time": { "$ref": "common.json#/definitions/datetime"},
+    "abstract": {
+      "type": "string",
+      "minLength": 1,
+      "description": "非空文章摘要，默认为文章第一句话"
+    },
+    "body": {
+      "type": "string",
+      "minLength": 1,
+      "description": "非空文章内容"
+    },
+    "category1": {
+      "type": "string",
+      "minLength": 1,
+      "description": "非空一级分类"
+    },
+    "category2": {
+      "type": "string",
+      "minLength": 1,
+      "description": "二级分类"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "非空文章标题"
+    },
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      },
+      "description": "body中的图片链接url，要求是字符串的list"
+    },
+    "request_url": {"type": "string"},
+    "response_url": {"type": "string"}
+  },
+  "required": [
+    "language_id",
+    "pub_time",
+    "abstract",
+    "body",
+    "category1",
+    "title",
+    "request_url",
+    "response_url"
+  ],
+  "description": "必填字段：website_id, language_id, pub_time, abstract, body, category1, title",
+  "additionalProperties": false
+}

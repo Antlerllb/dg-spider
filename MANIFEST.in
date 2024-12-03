@@ -1,0 +1,4 @@
+prune application
+
+exclude setup.py
+exclude MANIFEST.in

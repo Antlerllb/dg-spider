@@ -1,0 +1,28 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "body": {
+            "description": "必须且只能包含一个爬虫类",
+            "type": "array",
+            "contains": {
+                "type": "object",
+                "properties": {"_type": {"enum": ["ClassDef"]}},
+                "required": ["_type"]
+            },
+            "items": {
+                "properties": {"_type": {"enum": ["Import", "ImportFrom", "ClassDef"], "description": "爬虫类外部只能包含导包语句"}},
+                "allOf": [
+                    {
+                        "if": {"properties": {"_type": {"enum": ["Import", "ImportFrom"]}}},
+                        "then": { "$ref": "common.json#/definitions/import"}
+                    },
+                    {
+                        "if": {"properties": {"_type": {"enum": ["ClassDef"]}}},
+                        "then": { "$ref": "common.json#/definitions/spider_class"}
+                    }
+                ]
+            }
+        }
+    }
+}

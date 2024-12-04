@@ -2,7 +2,6 @@ from scrapy import signals
 
 from dg_spider.libs.base_spider import BaseSpider
 from dg_spider.middlewares.base_middlewares import BaseStatsMiddleware
-from dg_spider.utils.datetime_utils import get_date
 from dg_spider.utils.format_utils import format_log
 
 
@@ -33,7 +32,7 @@ class StatsInitMiddleware:
             spider.crawler.stats.set_value(key, value)
 
 
-class StatsSummaryMiddleware(BaseStatsMiddleware):
+class ArgsSummaryMiddleware(BaseStatsMiddleware):
     def spider_closed(self, spider):
         spider.logger.info(format_log(self, 'Close', body=spider.args))
 

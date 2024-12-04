@@ -74,7 +74,7 @@ class AuditStatsPipeline(MysqlPipeline):
             # 记录数量
             spider.crawler.stats.inc_value('audit_success_count')
             audit_success_count = spider.crawler.stats.get_value('audit_success_count')
-            spider.logger.info(format_log(self, f'success: {audit_success_count}/{self.minimum_news_count}', news_url=item['request_url']))
+            spider.logger.info(format_log(self, f'爬取统计: {audit_success_count}/{self.minimum_news_count}', news_url=item['request_url']))
             # 判断是否需要提前停止
             if audit_success_count > self.minimum_news_count:
                 spider.logger.info(format_log(self, f'新闻量已达到{self.minimum_news_count}，停止中'))

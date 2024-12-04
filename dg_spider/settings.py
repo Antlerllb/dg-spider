@@ -104,7 +104,7 @@ SPIDER_MIDDLEWARES = {
    "dg_spider.middlewares.audit_middlewares.AuditFinalMiddleware": 580,
 
    # 统计
-   "dg_spider.middlewares.stats_middlewares.StatsSummaryMiddleware": 800,
+   "dg_spider.middlewares.stats_middlewares.ArgsSummaryMiddleware": 800,
 }
 
 # Enable or disable downloader middlewares
@@ -128,18 +128,21 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   # 审核
+    # 审核
    "dg_spider.pipelines.audit_pipelines.AuditItemPipeline": 410,
    "dg_spider.pipelines.audit_pipelines.AuditLangPipeline": 420,
-   "dg_spider.pipelines.audit_pipelines.AuditStatsPipeline": 430,
 
-   # 定时
-   "dg_spider.pipelines.schedule_pipelines.TimerPipeline": 500,
+    # 调度
+   "dg_spider.pipelines.schedule_pipelines.MaxItemsStopMiddleware": 500,
+   "dg_spider.pipelines.schedule_pipelines.TimePointStopMiddleware": 501,
 
-   # 持久化
+    # 持久化
    "dg_spider.pipelines.mysql_pipelines.MysqlNewsPipeline": 600,
 
-   # 关闭
+    # 统计
+   "dg_spider.pipelines.stats_pipelines.StatsPipeline": 700,
+
+    # 关闭清空队列
    "dg_spider.pipelines.schedule_pipelines.ShutdownPipeline": 800,
 }
 

@@ -9,7 +9,7 @@
 	"crawl_until_datetime": "2024-12-03T03:47:39+08:00"
   },
   "audit": {
-	"enabled": true,
+	"enabled": false,
 	"audit_id": 1,
 	"mysql_enabled": false
   },

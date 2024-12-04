@@ -62,12 +62,12 @@ scrapyd-deploy
 ## 3.1 API简介
 受各种因素影响，请求前端时仅需提供task_id，请求之前需要将task的详细参数存入数据库。
 
-| Url             | Method | Body                | Response                          | 功能   |
-| --------------- | ------ | ------------------- | --------------------------------- | ---- |
-| /api/execute    | post   | {"task_id": "uuid"} | {"has_error": True, "msg": "..."} | 启动爬虫 |
-| /api/cancel     | post   | {"task_id": "uuid"} | {"has_error": True, "msg": "…"}   | 停止爬虫 |
-| /api/get_status | post   | {"task_id": "uuid"} | {"has_error": True, "msg": "…"}   | 查看状态 |
-| /api/get_log    | post   | {"task_id": "uuid"} | {"has_error": True, "msg": "…"}   | 获取日志 |
+| Url             | Method | Body                | Response                       | 功能   |
+| --------------- | ------ | ------------------- |--------------------------------| ---- |
+| /api/execute    | post   | {"task_id": "uuid"} | {"has_error": true, "msg": "…"} | 启动爬虫 |
+| /api/cancel     | post   | {"task_id": "uuid"} | {"has_error": true, "msg": "…"} | 停止爬虫 |
+| /api/get_status | post   | {"task_id": "uuid"} | {"has_error": true, "msg": "…"} | 查看状态 |
+| /api/get_log    | post   | {"task_id": "uuid"} | {"has_error": true, "msg": "…"} | 获取日志 |
 
 ## 3.2 Task参数示例
 ```json

@@ -27,4 +27,4 @@ class MysqlNewsPipeline(MysqlPipeline):
             spider.crawler.stats.inc_value('run_success_count')
             run_success_count = spider.crawler.stats.get_value('run_success_count')
             spider.logger.info(format_log(self, f'success: {run_success_count}', news_url=item['request_url']))
-            return item
+        return item

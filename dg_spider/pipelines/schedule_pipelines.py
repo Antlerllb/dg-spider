@@ -19,8 +19,8 @@ class MaxItemsStopMiddleware(MysqlMiddleware):
             audit_success_count = spider.crawler.stats.get_value('audit_success_count')
             if audit_success_count > self.minimum_news_count:
                 spider.logger.info(format_log(self, f'新闻量已达到{self.minimum_news_count}，停止中'))
-                spider.crawler.engine.close_spider(spider)
                 spider.is_running = False
+                spider.crawler.engine.close_spider(spider)
         return item
 
 

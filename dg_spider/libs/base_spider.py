@@ -65,8 +65,8 @@ class BaseSpider(scrapy.Spider):
     def _setup_timer(self):
         if self.args['spider']['started_by_scrapyd']:
             scrapy_url = my_cfg['scrapy']['url']
-            is_scrapy_accessible = is_url_accessible(scrapy_url)
-            if not is_scrapy_accessible:
+            is_scrapyd_accessible = is_url_accessible(scrapy_url)
+            if not is_scrapyd_accessible:
                 self.logger.error(format_log(self, '无法访问scrapy'))
                 return
             url = '{scrapy_url}/listjobs.json'.format(scrapy_url=scrapy_url)

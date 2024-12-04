@@ -62,22 +62,3 @@ class AuditLangPipeline(MysqlPipeline):
                 spider.logger.error(format_log(self, body='\n'.join(error_list)))
                 return None
         return item
-
-
-class AuditStatsPipeline(MysqlPipeline):
-    def __init__(self):
-        super().__init__()
-        self.minimum_news_count = int(self.session.query(Setting).filter(Setting.name == 'minimum_news_count').first().value)
-
-    def process_item(self, item: NewsItem, spider: BaseSpider):
-        if spider.is_running and spider.args['audit']['enabled'] and isinstance(item, NewsItem):
-            # 记录数量
-            spider.crawler.stats.inc_value('audit_success_count')
-            audit_success_count = spider.crawler.stats.get_value('audit_success_count')
-            spider.logger.info(format_log(self, f'爬取统计: {audit_success_count}/{self.minimum_news_count}', news_url=item['request_url']))
-            # 判断是否需要提前停止
-            if audit_success_count > self.minimum_news_count:
-                spider.logger.info(format_log(self, f'新闻量已达到{self.minimum_news_count}，停止中'))
-                spider.crawler.engine.close_spider(spider)
-                spider.is_running = False
-        return item

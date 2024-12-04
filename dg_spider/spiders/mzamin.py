@@ -60,7 +60,7 @@ class MzaminaSpider(BaseSpider):
         yield item
 
 
-# if __name__ == '__main__':
-#     from scrapy import cmdline
-#     command = "scrapy crawl mzamin -a json_path=json/spider.json"
-#     cmdline.execute(command.split())
+if __name__ == '__main__':
+    from scrapy import cmdline
+    command = "scrapy crawl mzamin -a json_path=json/spider.json"
+    cmdline.execute(command.split())

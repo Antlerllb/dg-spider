@@ -6,9 +6,6 @@ default:
     url: "http://localhost:6800"
   flask:
     temp_dir: 'application/temp'
-    egg_path: 'dist/dg_spider-1.0-py3.10.egg'
-
-
 
 dev:
   mysql:
@@ -23,13 +20,4 @@ dev:
 #    port: 3306
 #    username: "root"
 #    password: "123456"
-#    db: "dg_dev_crawler"
-
-
-#dev:
-#  mysql:
-#    host: "172.16.234.200"
-#    port: 3306
-#    username: "dg_dev"
-#    password: "dg_dev"
 #    db: "dg_dev_crawler"

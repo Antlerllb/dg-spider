@@ -17,7 +17,7 @@
 	"enabled": false,
 	"mode": "lab",
 	"temp": {
-	  "ip": "",
+	  "ip": "127.0.0.1",
 	  "port": 1234
 	}
   }

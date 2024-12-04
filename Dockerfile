@@ -29,8 +29,8 @@ RUN apt-get install -y \
     libxslt1.1
 
 # 暴露端口
-EXPOSE 6799
 EXPOSE 6800
+EXPOSE 6801
 
 # 启动项目
 #CMD ["scrapyd", "&", "scrapyd-deploy", "&", "python", "flask_app.py"]

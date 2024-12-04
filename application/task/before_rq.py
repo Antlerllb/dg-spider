@@ -5,28 +5,21 @@ from application.models import Website, Task, Audit
 from application.utils import request_scrapyd, format_json, execute_bash, validate_common
 from application.factory import my_cfg
 from application.common import CLIENT_ERROR_CODE, USER_ERROR_CODE, DEPLOY_COMMAND
-from application.task import task_bp
 
 from dg_spider.utils.audit_utils import has_pylint_error, has_py_schema_error
 
 
-@task_bp.before_request
-def before_request():
-    validate_common()
 
-
-@task_bp.before_request
 def validate_run():
     if not g.argument['audit']['enabled']:
         spider: Website = Website.query.filter(Website.name == g.spider_name).one_or_none()
         if spider.status != 'RUNNING':
-            return jsonify(format_json(True, '该爬虫未在运行中')), CLIENT_ERROR_CODE
+            return jsonify(format_json(True, '该爬虫未被部署，无法运行')), CLIENT_ERROR_CODE
 
 
-@task_bp.before_request
 def validate_audit():
     if g.argument['audit']['enabled']:
-        audit: Audit = Audit.query.filter(Audit.id == g.argument['audit_id']).one_or_none()
+        audit: Audit = Audit.query.filter(Audit.id == g.argument['audit']['audit_id']).one_or_none()
         if audit is None:
             return jsonify(format_json(True, 'audit_id输入错误')), CLIENT_ERROR_CODE
         audit_temp_dir: Path = current_app.BASE_DIR.joinpath(my_cfg['flask']['temp_dir'])
@@ -47,10 +40,9 @@ def validate_audit():
 def deploy_audit_callback():
     ok, msg = request_scrapyd('addversion')
     status_code = 200 if ok else CLIENT_ERROR_CODE
-    return format_json(ok, msg), status_code
+    return format_json(not ok, msg), status_code
 
 
-@task_bp.before_request
 def deploy_audit():
     if g.argument['audit']['enabled']:
         base_dir: Path = current_app.BASE_DIR

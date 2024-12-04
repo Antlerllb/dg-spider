@@ -8,7 +8,7 @@ from jsonschema import validate, RefResolver
 from jsonschema.exceptions import ValidationError
 import importlib.resources as pkg_resources
 from pylint.reporters.text import TextReporter
-from dg_spider.utils.io_utils import read_json, get_path, read_text
+from dg_spider.utils.io_utils import read_json, get_path
 
 
 def has_json_schema_error(json_data: dict, schema_name):
@@ -29,7 +29,7 @@ def has_json_schema_error(json_data: dict, schema_name):
 def has_pylint_error(py_path):
     pylint_output = StringIO()  # Custom open stream
     reporter = TextReporter(pylint_output)
-    with pkg_resources.path(*get_path(py_path)) as data_file:
+    with open(py_path, 'r', encoding='utf-8') as data_file:
         with pkg_resources.path(*get_path('config/.pylintrc')) as config_file:
             result = lint.Run([f'--rcfile={str(config_file)}', str(data_file)], reporter=reporter, exit=False)
             if result.linter.msg_status != 0:
@@ -70,7 +70,9 @@ def has_lang_error(text, lang_iso, second_max_threshold, detect_exclude_list):
 
 
 def has_py_schema_error(py_path):
-    ast_node = ast2json(ast.parse(read_text(py_path)))
+    with open(py_path, 'r', encoding='utf-8') as data_file:
+        content = data_file.read()
+    ast_node = ast2json(ast.parse(content))
     res = has_json_schema_error(ast_node, 'py_ast')
     return res
 

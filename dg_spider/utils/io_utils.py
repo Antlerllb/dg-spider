@@ -18,8 +18,8 @@ def read_json(path):
         with open(datafile, 'r', encoding='utf-8') as f:
             return json.load(f)
 
-def read_text(path):
-    resource_path, file_name = get_path(path)
-    with pkg_resources.path(resource_path, file_name) as datafile:
-        with open(datafile, 'r', encoding='utf-8') as f:
-            return f.read()
+# def read_text(path):
+#     resource_path, file_name = get_path(path)
+#     with pkg_resources.path(resource_path, file_name) as datafile:
+#         with open(datafile, 'r', encoding='utf-8') as f:
+#             return f.read()

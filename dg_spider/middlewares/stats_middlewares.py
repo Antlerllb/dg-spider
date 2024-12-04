@@ -35,6 +35,5 @@ class StatsInitMiddleware:
 
 class StatsSummaryMiddleware(BaseStatsMiddleware):
     def spider_closed(self, spider):
-        display_args = {k: v for k, v in spider.args.items() if not k.startswith('_')}
-        spider.logger.info(format_log(self, f'Close: {display_args}'))
+        spider.logger.info(format_log(self, 'Close', body=spider.args))
 

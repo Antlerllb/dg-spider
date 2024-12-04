@@ -43,7 +43,7 @@ class BaseSpider(scrapy.Spider):
                 self.args = session.query(Task).filter(Task.id == self.task_id).one().argument
         elif kwargs.get('json_path'):
             self.args = read_json(kwargs.get('json_path'))
-        self.logger.info(format_log(self, f'Start: {self.args}'))
+        self.logger.info(format_log(self, 'Start', body=self.args))
 
     def _verify_args(self):
         error = has_json_schema_error(self.args, 'spider_args')
@@ -63,7 +63,7 @@ class BaseSpider(scrapy.Spider):
                     raise Exception('看前面打印的日志')
 
     def _setup_timer(self):
-        if self.args['spider']['started_by_scrapy']:
+        if self.args['spider']['started_by_scrapyd']:
             scrapy_url = my_cfg['scrapy']['url']
             is_scrapy_accessible = is_url_accessible(scrapy_url)
             if not is_scrapy_accessible:

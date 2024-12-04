@@ -5,6 +5,8 @@ from sqlalchemy.orm import relationship
 from application.factory import db
 
 Base = db.Model
+metadata = Base.metadata
+
 
 class Audit(Base):
     __tablename__ = 'audit'
@@ -13,9 +15,9 @@ class Audit(Base):
     user_id = Column(Integer, primary_key=True, nullable=False, comment='作者')
     website_id = Column(Integer, primary_key=True, nullable=False, index=True, comment='网站编号')
     task_id = Column(String(255), primary_key=True, nullable=False)
-    status = Column(ENUM('APPROVED', 'REJECTED', 'IN_PROGRESS'), server_default=text("'IN_PROGRESS'"))
-    code = Column(MEDIUMTEXT, comment='提交源码')
-    commit_time = Column(DateTime, comment='提交时间')
+    status = Column(ENUM('APPROVED', 'REJECTED', 'IN_PROGRESS'), nullable=False, server_default=text("'IN_PROGRESS'"))
+    code = Column(MEDIUMTEXT, nullable=False, comment='提交源码')
+    commit_time = Column(DateTime, nullable=False, comment='提交时间')
     audit_time = Column(DateTime, comment='审核时间')
     created_time = Column(DateTime, comment='每当每行的数据被创建的时候更新现在的时间')
     updated_time = Column(DateTime, comment='触发器')
@@ -71,14 +73,13 @@ class User(Base):
     __table_args__ = {'comment': '权限说明：\\n1 admin\\n10 管理员\\n'}
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(255))
-    level = Column(Integer)
-    username = Column(VARCHAR(255))
-    password = Column(VARCHAR(255))
-    grade = Column(Integer)
-    gender = Column(Integer, comment='1男2女3其他')
-    email = Column(VARCHAR(255))
-    enabled = Column(Integer, server_default=text("'1'"), comment='0禁用1启用')
+    name = Column(VARCHAR(255), nullable=False)
+    level = Column(Integer, nullable=False, server_default=text("'20'"))
+    username = Column(VARCHAR(255), nullable=False)
+    password = Column(VARCHAR(255), nullable=False)
+    email = Column(VARCHAR(255), nullable=False)
+    grade = Column(Integer, nullable=False, server_default=text("'0'"), comment='0未知')
+    enabled = Column(Integer, nullable=False, server_default=text("'0'"), comment='0禁用1启用')
     created_time = Column(DateTime)
     updated_time = Column(DateTime)
 
@@ -96,7 +97,6 @@ class Website(Base):
     c_name = Column(TEXT, comment='中文名称')
     remark = Column(TEXT, comment='说明本网站在数据获取中的一些问题')
     level = Column(Integer, server_default=text("'999'"), comment='优先级别')
-    author = Column(MEDIUMTEXT, comment='作者')
     status = Column(Enum('PENDING_ASSIGNMENT', 'PENDING_REWRITE', 'IN_PROGRESS', 'UNDER_REVIEW', 'APPROVED', 'RUNNING'), server_default=text("'PENDING_ASSIGNMENT'"))
     created_time = Column(DateTime, comment='每当每行的数据被创建的时候更新现在的时间')
     updated_time = Column(DateTime)

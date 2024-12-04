@@ -29,7 +29,8 @@ def init_app() -> Flask:
     app.config["SQLALCHEMY_ECHO"] = True
 
     # debug
-    app.config["DEBUG"] = True if env == 'dev' else False
+    # app.config["DEBUG"] = True if env == 'dev' else False
+    app.config["DEBUG"] = False
 
     db.init_app(app)
     return app

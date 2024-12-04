@@ -6,10 +6,10 @@
       "type": "object",
       "properties": {
         "website_id": {"type": "integer"},
-        "started_by_scrapy": {"type": "boolean"},
+        "started_by_scrapyd": {"type": "boolean"},
         "mysql_enabled": {"type": "boolean"}
       },
-      "required": ["website_id", "started_by_scrapy", "mysql_enabled"]
+      "required": ["website_id", "started_by_scrapyd", "mysql_enabled"]
     },
     "timer": {
       "type": "object",

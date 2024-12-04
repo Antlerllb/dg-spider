@@ -1,7 +1,7 @@
 {
   "spider": {
 	"website_id": 2268,
-	"started_by_scrapy": false,
+	"started_by_scrapyd": false,
 	"mysql_enabled": false
   },
   "timer": {

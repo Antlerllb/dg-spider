@@ -51,7 +51,7 @@ LOGGING = {
     },
     'loggers': {
         'scrapy': {
-            'handlers': ['file', 'console'],
+            'handlers': ['file'],
             'level': 'INFO',
             'propagate': False,
         },

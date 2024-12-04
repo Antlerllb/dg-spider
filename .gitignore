@@ -128,7 +128,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# project added
+# idea
 .vscode/
 .idea/
 _trial_temp
@@ -136,3 +136,7 @@ _trial_temp.*
 
 # mac
 *.BAK
+
+# scrapyd
+dbs/
+twistd.pid

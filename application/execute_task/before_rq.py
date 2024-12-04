@@ -30,8 +30,8 @@ def validate_audit():
         pylint_error = has_pylint_error(f.name)
         py_schema_error = has_py_schema_error(f.name)
         filename.unlink()  # 删除文件
-        # if pylint_error:  todo
-        #     return jsonify(format_json(True, pylint_error)), USER_ERROR_CODE
+        if pylint_error:
+            return jsonify(format_json(True, pylint_error)), USER_ERROR_CODE
         if py_schema_error:
             return jsonify(format_json(True, py_schema_error)), USER_ERROR_CODE
 

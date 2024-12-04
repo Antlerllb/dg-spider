@@ -26,16 +26,6 @@ def has_json_schema_error(json_data: dict, schema_name):
         return msg
 
 
-def has_pylint_error(py_path):
-    pylint_output = StringIO()  # Custom open stream
-    reporter = TextReporter(pylint_output)
-    with open(py_path, 'r', encoding='utf-8') as data_file:
-        with pkg_resources.path(*get_path('config/.pylintrc')) as config_file:
-            result = lint.Run([f'--rcfile={str(config_file)}', str(data_file)], reporter=reporter, exit=False)
-            if result.linter.msg_status != 0:
-                return pylint_output.getvalue()
-
-
 def has_lang_error(text, lang_iso, second_max_threshold, detect_exclude_list):
     lang_detect_info = {'has_error': False}
     try:
@@ -75,6 +65,15 @@ def has_py_schema_error(py_path):
     ast_node = ast2json(ast.parse(content))
     res = has_json_schema_error(ast_node, 'py_ast')
     return res
+
+
+def has_pylint_error(py_path):
+    pylint_output = StringIO()  # Custom open stream
+    reporter = TextReporter(pylint_output)
+    with pkg_resources.path(*get_path('config/.pylintrc')) as config_file:
+        result = lint.Run([f'--rcfile={str(config_file)}', py_path], reporter=reporter, exit=False)
+        if result.linter.msg_status != 0:
+            return pylint_output.getvalue()
 
 
 def is_url_accessible(url):

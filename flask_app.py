@@ -1,6 +1,7 @@
+from application.cancel_task import cancel_bp
 from application.factory import Flask, init_app
 from application.monitor import monitor_bp
-from application.task import task_bp
+from application.execute_task import execute_task_bp
 
 app: Flask = init_app()
 
@@ -8,8 +9,9 @@ app: Flask = init_app()
 def index():
     return 'Welcome to dg_spider'
 
-app.register_blueprint(task_bp, url_prefix='/task')
-app.register_blueprint(monitor_bp, url_prefix='/monitor')
+app.register_blueprint(execute_task_bp, url_prefix='/api')
+app.register_blueprint(monitor_bp, url_prefix='/api')
+app.register_blueprint(cancel_bp, url_prefix='/api')
 
 
 if __name__ == '__main__':

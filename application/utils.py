@@ -1,3 +1,4 @@
+import json
 import os
 import subprocess
 from pathlib import Path
@@ -15,25 +16,19 @@ def format_json(has_error: bool, msg: str):
     return {'has_error': has_error, 'msg': msg}
 
 
-def format_stream(has_error: bool, msg: str):
-    return f"data: {jsonify(format_json(has_error, msg))}\n\n"
-
-
 def request_scrapyd(api:str):
     flask_cfg, scrapy_cfg = my_cfg['flask'], my_cfg['scrapy']
-    base_dir: Path = current_app.BASE_DIR
     if api == 'schedule':
         url = '{url}/{api}.json'.format(**scrapy_cfg, api=api)
         data = {'project': scrapy_cfg['project'], 'spider': g.spider_name, 'jobid': g.task_id, 'task_id': g.task_id}
         resp = requests.post(url, data=data).json()
         msg = '启动成功' if resp['status'] == 'ok' else resp['message']
         return resp['status'] == 'ok', msg
-    elif api == 'addversion':
+    elif api == 'cancel':
         url = '{url}/{api}.json'.format(**scrapy_cfg, api=api)
-        egg_path = base_dir.joinpath(flask_cfg['egg_path'])
-        data = {'project': scrapy_cfg['project'], 'version': 'r1'}
-        resp = requests.post(url, data=data, files={'egg': open(egg_path, 'rb')}).json()
-        msg = '开始审核' if resp['status'] == 'ok' else resp['message']
+        data = {'project': scrapy_cfg['project'], 'job': g.task_id}
+        resp = requests.post(url, data=data).json()
+        msg = '正在取消' if resp['status'] == 'ok' else resp['message']
         return resp['status'] == 'ok', msg
     elif api == 'status':
         url = '{url}/{api}.json'.format(**scrapy_cfg, api=api)
@@ -48,7 +43,7 @@ def request_scrapyd(api:str):
         return resp.status_code == 200, resp.text
 
 
-def execute_bash(bash_command, cwd, env=None, success_callback:callable=None):
+def execute_bash(bash_command, cwd, env=None):
     process = subprocess.Popen(
         bash_command,
         stdout=subprocess.PIPE,
@@ -57,18 +52,18 @@ def execute_bash(bash_command, cwd, env=None, success_callback:callable=None):
         env=env if env else os.environ.copy(),
         cwd=cwd,
     )
+    stdout_lines, stderr_lines = [], []
     while True:
         return_code = process.poll()
         output = process.stdout.readline()
         if output:
-            yield format_stream(False, output.strip())
+            stdout_lines.append(output.strip())
         error = process.stderr.readline()
         if error:
-            yield format_stream(True, error.strip())
+            stderr_lines.append(error.strip())
         if return_code is not None and not output and not error:
             break
-    if return_code == 0:    # 执行成功
-        yield format_stream(**success_callback())
+    return stdout_lines, stderr_lines
 
 
 def validate_common():

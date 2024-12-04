@@ -10,5 +10,8 @@ setup(
     package_data={
         'dg_spider': ['resources/**/*'],
     },
+    # exclude_package_data={
+    #     'flask': ['application/*', 'flask.app.py'],
+    # },
 )
 

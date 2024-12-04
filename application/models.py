@@ -59,7 +59,7 @@ class Setting(Base):
 
 
 class Task(Base):
-    __tablename__ = 'task'
+    __tablename__ = 'execute_task'
 
     id = Column(VARCHAR(255), primary_key=True, comment='uuid')
     argument = Column(JSON, comment='参数')

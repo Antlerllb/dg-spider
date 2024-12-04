@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from flask import jsonify, g, current_app, Response
@@ -26,28 +27,25 @@ def validate_audit():
         filename = audit_temp_dir.joinpath(f'{g.spider_name}.py')
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(audit.code)
-            pylint_error = has_pylint_error(f.name)
-            py_schema_error = has_py_schema_error(f.name)
+        pylint_error = has_pylint_error(f.name)
+        py_schema_error = has_py_schema_error(f.name)
         filename.unlink()  # 删除文件
-        if pylint_error:
-            return jsonify(format_json(True, pylint_error)), USER_ERROR_CODE
+        # if pylint_error:  todo
+        #     return jsonify(format_json(True, pylint_error)), USER_ERROR_CODE
         if py_schema_error:
             return jsonify(format_json(True, py_schema_error)), USER_ERROR_CODE
 
         g.code = audit.code
 
 
-def deploy_audit_callback():
-    ok, msg = request_scrapyd('addversion')
-    status_code = 200 if ok else CLIENT_ERROR_CODE
-    return format_json(not ok, msg), status_code
-
-
 def deploy_audit():
     if g.argument['audit']['enabled']:
         base_dir: Path = current_app.BASE_DIR
-        filename = base_dir.joinpath(my_cfg['scrapy']['project']).joinpath(f'{g.spider_name}.py')
+        filename = base_dir.joinpath(my_cfg['scrapy']['project']).joinpath(f'spiders/{g.spider_name}.py')
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(g.code)
-        return Response(execute_bash(DEPLOY_COMMAND, base_dir, success_callback=deploy_audit_callback),
-                        mimetype='text/event-stream', status=200)
+        stdout_lines, stderr_lines = execute_bash(DEPLOY_COMMAND, base_dir)
+        resp = json.loads(stdout_lines[0])
+        ok = resp['status'] == 'ok'
+        if not ok:
+            return jsonify(format_json(True, resp['message'])), CLIENT_ERROR_CODE

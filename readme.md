@@ -26,7 +26,7 @@ dg_spider 是一款功能强大的多语种语料获取与管理平台（Corpus 
 # 2 安装
 ## 2.1 Docker
 ### 2.1.1 建数据库
-运行SQL：`dg_spider/docs/dg_dev_crawler.sql`
+运行SQL：`dg_spider/docs/dg_dev_crawler.sql`  
 修改dev配置：`dg_spider/dg_spider/resources/config/config.yaml`
 ### 2.1.2 构建并启动容器
 ```
@@ -35,7 +35,7 @@ docker run -p 6801:6801 --name dg_spider_container dg_spider
 ```
 ## 2.2 Python
 ### 2.2.1 建数据库
-运行SQL：`dg_spider/docs/dg_dev_crawler.sql`
+运行SQL：`dg_spider/docs/dg_dev_crawler.sql`  
 修改dev配置：`dg_spider/dg_spider/resources/config/config.yaml`
 ### 2.2.2 安装Conda环境
 ```

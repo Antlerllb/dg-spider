@@ -40,6 +40,7 @@ docker run -p 6801:6801 --name dg_spider_container dg_spider
 ### 2.2.2 安装Conda环境
 ```
 conda create -n dg_spider python=3.10.15
+conda activate dg_spider
 pip install -r requirements.txt
 ```
 ### 2.2.3 启动框架

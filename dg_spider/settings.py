@@ -47,13 +47,7 @@ LOGGING = {
             'filename': LOG_FILE,
             'formatter': 'standard',
             'filters': ['scrapy_filter'],  # 应用过滤器
-        },
-        'console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'standard',
-            'filters': ['scrapy_filter'],  # 应用过滤器
-        },
+        }
     },
     'loggers': {
         'scrapy': {

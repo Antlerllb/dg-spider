@@ -8,8 +8,7 @@ from bs4 import BeautifulSoup
 from dg_spider.items import NewsItem
 from dg_spider.libs.base_spider import BaseSpider
 
-
-class MzaminSpider(BaseSpider):
+class MzaminaSpider(BaseSpider):
     name = 'mzamin'
     website_id = 2268
     language_id = 1779
@@ -63,6 +62,5 @@ class MzaminSpider(BaseSpider):
 
 if __name__ == '__main__':
     from scrapy import cmdline
-    command = "scrapy crawl mzamin -a json_path=json/spider.json"
-    # command = "scrapy crawl update_timestamp -a task_id=d9f7798f-75b1-454c-9813-6ff5713353f1"
+    command = "scrapy crawl mmmofcomgovcn -a json_path=json/spider.json"
     cmdline.execute(command.split())

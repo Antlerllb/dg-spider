@@ -1,4 +1,4 @@
-# dg_spider
+# dg_spider 多语种语料获取与管理平台（后端）
 
 # 1 简介
 ## 1.1 功能
@@ -20,7 +20,19 @@ dg_spider 是一款功能强大的多语种语料获取与管理平台（Corpus 
 
 用户管理、消息通知、代码上传、定时运行等功能由前端同学完成。
 
-## 1.2 后端运行截图
+## 1.2 数据来源
+数据来自上百个低资源语言国家门户网站或社交媒体的新闻文章，涵盖了政治、经济、体育等多个领域。
+
+| 网站         | 链接                                      |
+|------------|-----------------------------------------|
+| Asianet新闻网 | https://bangla.asianetnews.com          |
+| 孟加拉国在线新闻   | https://www.bangla.24livenewspaper.com/ |
+| Desh TV    | https://www.desh.tv/                    |
+| Jago新闻网    | https://www.jagonews24.com/             |
+| …          | …                                       |
+## 1.3 数据结构
+![img.png](docs/imgs/数据结构.png)
+## 1.4 后端运行截图
 ![img.png](docs/imgs/后端运行截图.png)
 
 # 2 安装

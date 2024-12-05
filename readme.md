@@ -58,15 +58,18 @@ pip install -r requirements.txt
 ### 2.2.3 启动框架
 进程1：
 ```
+conda activate dg_spider
 scrapyd
 ```
 进程2：
 ```
+conda activate dg_spider
 python flask_app.py
 ```
 ### 2.2.4 初始化框架
 运行命令：
 ```
+conda activate dg_spider
 scrapyd-deploy
 ```
 

@@ -1,6 +1,8 @@
 import importlib.resources as pkg_resources
 import logging
+import asyncio
 import os
+import sys
 import yaml
 from scrapy.utils.log import configure_logging
 from twisted.internet import asyncioreactor
@@ -15,6 +17,8 @@ with pkg_resources.path('dg_spider.resources.config', 'config.yaml') as datafile
         my_cfg.update(my_yaml[env])
 
 # 异步开启子进程
+if sys.platform.startswith("win"):
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 asyncioreactor.install()
 
 # 禁用scrapy日志

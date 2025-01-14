@@ -46,7 +46,7 @@ class AuditFinalMiddleware(BaseStatsMiddleware):
                     website_to_update = session.query(Website).filter(Website.id == website_id).first()
                     audit_to_update = session.query(Audit).filter(Audit.id == audit_id).first()
                     if self.stats.get_value('is_audit_passed'):
-                        website_to_update.status = audit_to_update.result = 'RUNNING'
+                        website_to_update.status = audit_to_update.result = 'RUNNING'   # todo
                     else:
                         website_to_update.status = 'IN_PROGRESS'
                         audit_to_update.result = 'REJECTED'

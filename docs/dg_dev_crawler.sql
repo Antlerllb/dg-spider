@@ -11,7 +11,7 @@
  Target Server Version : 80040 (8.0.40)
  File Encoding         : 65001
 
- Date: 05/12/2024 01:03:02
+ Date: 14/01/2025 18:40:04
 */
 
 SET NAMES utf8mb4;
@@ -26,7 +26,7 @@ CREATE TABLE `audit` (
   `user_id` int NOT NULL COMMENT '作者',
   `website_id` int NOT NULL COMMENT '网站编号',
   `task_id` varchar(255) NOT NULL,
-  `status` enum('APPROVED','REJECTED','IN_PROGRESS') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'IN_PROGRESS',
+  `result` enum('APPROVED','REJECTED','UNDER_REVIEW') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'UNDER_REVIEW',
   `code` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '提交源码',
   `commit_time` datetime NOT NULL COMMENT '提交时间',
   `audit_time` datetime DEFAULT NULL COMMENT '审核时间',
@@ -40,10 +40,6 @@ CREATE TABLE `audit` (
 -- Records of audit
 -- ----------------------------
 BEGIN;
-INSERT INTO `audit` (`id`, `user_id`, `website_id`, `task_id`, `status`, `code`, `commit_time`, `audit_time`, `created_time`, `updated_time`) VALUES (1, 1, 2268, '3af6f4e1-0265-48d4-8059-eeca945f8017', 'IN_PROGRESS', 'a', '2024-12-03 13:21:02', '2024-12-03 21:01:40', '2024-12-02 16:15:57', '2024-12-03 21:01:39');
-INSERT INTO `audit` (`id`, `user_id`, `website_id`, `task_id`, `status`, `code`, `commit_time`, `audit_time`, `created_time`, `updated_time`) VALUES (10, 20, 2268, '00788489-3fbc-4a94-a3b2-0e7c8ce164dd', 'IN_PROGRESS', '\n\n# 此文件包含的头文件不要修改\nimport scrapy\nfrom dg_spider.items import NewsItem\nimport scrapy\nfrom dg_spider.libs.base_spider import BaseSpider\nfrom dg_spider.utils.old_utils import OldDateUtil\nfrom dg_spider.items import NewsItem\nimport scrapy\nimport scrapy\nfrom dg_spider.libs.base_spider import BaseSpider\nfrom dg_spider.utils.old_utils import OldFormatUtil\nfrom dg_spider.utils.old_utils import OldDateUtil\n\nfrom bs4 import BeautifulSoup\nimport scrapy\nfrom dg_spider.items import NewsItem\nimport scrapy\nfrom dg_spider.libs.base_spider import BaseSpider\nfrom dg_spider.utils.old_utils import OldDateUtil\nfrom scrapy.http import Request, Response\nimport re\n\n#将爬虫类名和name字段改成对应的网站名\nclass aajkaSpider(BaseSpider):\n    name = \'aajka\'\n    website_id = 966  # 网站的id(必填)\n    language_id = 1930  # 所用语言的id\n    start_urls = [\'https://aajka-samachar.in/\']\n    sql = {  # sql配置\n        \'host\': \'192.168.235.162\',\n        \'user\': \'dg_admin\',\n        \'password\': \'dg_admin\',\n        \'db\': \'dg_crawler\'\n    }\n    \n\n    def parse(self, response):\n        soup = BeautifulSoup(response.text)\n        for i in soup.select(\'#categories-6 a\'):\n            yield Request(i.attrs[\'href\'], callback=self.parse_category)\n\n    def parse_category(self, response):\n        soup = BeautifulSoup(response.text)\n        flag = True\n        for i in soup.select(\'.jeg_inner_content article .jeg_meta_date a\'):\n            date = OldDateUtil.format_time2(i.text)\n            if OldDateUtil.time == None or OldDateUtil.format_time3(date) >= int(OldDateUtil.time):\n                yield Request(i.attrs[\'href\'], callback=self.parse_detail, meta={\'date\':date})\n            else:\n                flag = False\n                self.logger.info(\"时间截止\")\n                break\n        if flag:\n            try:\n                yield Request(soup.select(\'.page_nav.next\')[0].attrs[\'href\'], callback=self.parse_category)\n            except:\n                pass\n\n    def parse_detail(self, response):\n        html = BeautifulSoup(response.text)\n        item = NewsItem(language_id=self.language_id)\n        item[\'title\'] = html.select(\'.jeg_post_title\')[0].text\n        categorylist = html.select(\'#breadcrumbs > span a\')\n        item[\'category1\'] = categorylist[-2].text\n        item[\'category2\'] = categorylist[-1].text\n        item[\'body\'] = \'\'\n        for i in html.select(\'.content-inner > p\'):\n            item[\'body\'] += (i.text+\'\\n\')\n        if html.select(\'.content-inner > p\') != []:\n            item[\'abstract\'] = html.select(\'.content-inner > p\')[0].text\n        item[\'pub_time\'] = response.meta[\'date\']\n        if html.select(\'.jeg_featured.featured_image a\') != []:\n            item[\'images\'] = [html.select(\'.jeg_featured.featured_image a\')[0].attrs[\'href\'],]\n        yield item\n', '2024-12-04 21:28:33', NULL, '2024-12-04 21:28:32', '2024-12-04 21:28:32');
-INSERT INTO `audit` (`id`, `user_id`, `website_id`, `task_id`, `status`, `code`, `commit_time`, `audit_time`, `created_time`, `updated_time`) VALUES (11, 20, 2268, '35f31abb-c839-4f88-9e58-54c0478a78ca', 'IN_PROGRESS', 'import time\n\nfrom scrapy import Selector\nfrom scrapy.exceptions import CloseSpider\nfrom scrapy.http.request import Request\nfrom bs4 import BeautifulSoup\n\nfrom dg_spider.items import NewsItem\nfrom dg_spider.libs.base_spider import BaseSpider\n\nclass MzaminaSpider(BaseSpider):\n    name = \'mzamin\'\n    website_id = 2268\n    language_id = 1779\n    author = \'王晋麟\'\n\n    base_url = \'https://mzamin.com/archivedNews.php?data={}&date={}\'\n    day = 0\n\n    @staticmethod\n    def make_args(day):\n        stamp = int(time.time()) - day * 86400\n        format_time = time.strftime(\"%Y-%m-%d\", time.localtime(int(stamp)))\n        time_stamp = int(time.mktime(time.strptime(format_time, \"%Y-%m-%d\")))\n        return format_time, time_stamp\n\n    def start_requests(self):\n        format_time, time_stamp = self.make_args(self.day)\n        self.day += 1\n        yield Request(url=self.base_url.format(time_stamp, format_time),\n                      callback=self.parse, meta={\'format_time\': format_time + \' 00:00:00\'})\n\n    def parse(self, response, **kwargs):\n        sel = Selector(response)\n        news_lis = sel.css(\'.my-3\')\n        for news in news_lis:\n            news_url = news.css(\'h1 a::attr(href)\').get()\n            news_title = news.css(\'h1 a::text\').get().strip()\n            yield Request(url=response.urljoin(news_url), callback=self.parse_item,\n                          meta={\'title\': news_title,\n                                \'format_time\': response.meta[\'format_time\']})\n        format_time, time_stamp = self.make_args(self.day)\n        self.day += 1\n        yield Request(url=self.base_url.format(time_stamp, format_time),\n                      callback=self.parse, meta={\'format_time\': format_time + \' 00:00:00\'})\n\n    def parse_item(self, response):\n        sel = Selector(response)\n        soup = BeautifulSoup(response.text, \'html.parser\')\n        item = NewsItem()\n        item[\'category1\'] = \'সংবাদ\'\n        item[\'title\'] = response.meta[\'title\'] if response.meta[\'title\'] != \'\' else sel.css(\'.col-sm-8 h1.fs-1::text\').get().strip()\n        item[\'pub_time\'] = response.meta[\'format_time\']\n        item[\'images\'] = [response.urljoin(img.css(\'img::attr(data-src)\').get()).replace(\' \', \'\') for img in sel.css(\'.col-sm-8 .img-fluid\')]\n        item[\'body\'] = \'\\n\'.join([\' \'.join(content.text.replace(\'\\xa0\', \'\').replace(\'\\n\', \'\').strip().split()) for content in soup.select(\'.col-sm-8 .fs-5 p\') if content.text.strip() != \'\'])\n        item[\'abstract\'] = item[\'body\'].split(\'\\n\')[0].strip() if item[\'body\'].split(\'\\n\')[0] != \'\' and len(item[\'body\'].split(\'\\n\')[0]) < 100 else item[\'body\'].split(\'।\')[0].strip()\n        if len(item[\'body\'].split(\'\\n\')) == 1:\n            item[\'body\'] = item[\'abstract\'].strip() + \'\\n\' + item[\'body\'].strip()\n        item[\'language_id\'] = self.language_id\n        yield item\n\n\nif __name__ == \'__main__\':\n    from scrapy import cmdline\n    command = \"scrapy crawl mzamin -a json_path=json/spider.json\"\n    cmdline.execute(command.split())\n', '2024-12-04 21:33:11', NULL, '2024-12-04 21:33:10', '2024-12-04 21:33:10');
-INSERT INTO `audit` (`id`, `user_id`, `website_id`, `task_id`, `status`, `code`, `commit_time`, `audit_time`, `created_time`, `updated_time`) VALUES (12, 20, 2268, '1a7bc420-45eb-4d99-b103-786e7ac9b079', 'IN_PROGRESS', 'import time\n\nfrom scrapy import Selector\nfrom scrapy.exceptions import CloseSpider\nfrom scrapy.http.request import Request\nfrom bs4 import BeautifulSoup\n\nfrom dg_spider.items import NewsItem\nfrom dg_spider.libs.base_spider import BaseSpider\n\nclass MzaminaSpider(BaseSpider):\n    name = \'mzamin\'\n    website_id = 2268\n    language_id = 1779\n    author = \'王晋麟\'\n\n    base_url = \'https://mzamin.com/archivedNews.php?data={}&date={}\'\n    day = 0\n\n    @staticmethod\n    def make_args(day):\n        stamp = int(time.time()) - day * 86400\n        format_time = time.strftime(\"%Y-%m-%d\", time.localtime(int(stamp)))\n        time_stamp = int(time.mktime(time.strptime(format_time, \"%Y-%m-%d\")))\n        return format_time, time_stamp\n\n    def start_requests(self):\n        format_time, time_stamp = self.make_args(self.day)\n        self.day += 1\n        yield Request(url=self.base_url.format(time_stamp, format_time),\n                      callback=self.parse, meta={\'format_time\': format_time + \' 00:00:00\'})\n\n    def parse(self, response, **kwargs):\n        sel = Selector(response)\n        news_lis = sel.css(\'.my-3\')\n        for news in news_lis:\n            news_url = news.css(\'h1 a::attr(href)\').get()\n            news_title = news.css(\'h1 a::text\').get().strip()\n            yield Request(url=response.urljoin(news_url), callback=self.parse_item,\n                          meta={\'title\': news_title,\n                                \'format_time\': response.meta[\'format_time\']})\n        format_time, time_stamp = self.make_args(self.day)\n        self.day += 1\n        yield Request(url=self.base_url.format(time_stamp, format_time),\n                      callback=self.parse, meta={\'format_time\': format_time + \' 00:00:00\'})\n\n    def parse_item(self, response):\n        sel = Selector(response)\n        soup = BeautifulSoup(response.text, \'html.parser\')\n        item = NewsItem()\n        item[\'category1\'] = \'সংবাদ\'\n        item[\'title\'] = response.meta[\'title\'] if response.meta[\'title\'] != \'\' else sel.css(\'.col-sm-8 h1.fs-1::text\').get().strip()\n        item[\'pub_time\'] = response.meta[\'format_time\']\n        item[\'images\'] = [response.urljoin(img.css(\'img::attr(data-src)\').get()).replace(\' \', \'\') for img in sel.css(\'.col-sm-8 .img-fluid\')]\n        item[\'body\'] = \'\\n\'.join([\' \'.join(content.text.replace(\'\\xa0\', \'\').replace(\'\\n\', \'\').strip().split()) for content in soup.select(\'.col-sm-8 .fs-5 p\') if content.text.strip() != \'\'])\n        item[\'abstract\'] = item[\'body\'].split(\'\\n\')[0].strip() if item[\'body\'].split(\'\\n\')[0] != \'\' and len(item[\'body\'].split(\'\\n\')[0]) < 100 else item[\'body\'].split(\'।\')[0].strip()\n        if len(item[\'body\'].split(\'\\n\')) == 1:\n            item[\'body\'] = item[\'abstract\'].strip() + \'\\n\' + item[\'body\'].strip()\n        item[\'language_id\'] = self.language_id\n        yield item\n\n\n# if __name__ == \'__main__\':\n#     from scrapy import cmdline\n#     command = \"scrapy crawl mzamin -a json_path=json/spider.json\"\n#     cmdline.execute(command.split())\n', '2024-12-04 21:43:00', NULL, '2024-12-04 21:43:00', '2024-12-05 00:39:54');
 COMMIT;
 
 -- ----------------------------
@@ -906,7 +902,7 @@ CREATE TABLE `setting` (
   `category` varchar(255) DEFAULT NULL,
   `value` varchar(255) DEFAULT NULL,
   `label` varchar(255) DEFAULT NULL,
-  `remark` varchar(255) DEFAULT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_time` datetime DEFAULT NULL,
   `updated_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`,`name`) USING BTREE
@@ -916,13 +912,13 @@ CREATE TABLE `setting` (
 -- Records of setting
 -- ----------------------------
 BEGIN;
-INSERT INTO `setting` (`id`, `name`, `category`, `value`, `label`, `remark`, `created_time`, `updated_time`) VALUES (1, 'proxy', 'run', 'http://192.168.207.251:8888', '代理', '可回车分隔多个代理', '2024-11-28 11:35:29', '2024-12-03 03:46:26');
-INSERT INTO `setting` (`id`, `name`, `category`, `value`, `label`, `remark`, `created_time`, `updated_time`) VALUES (2, 'minimum_news_count', 'check', '2000', '最低新闻量要求', '全站爬取时默认的最低新闻量要求', '2024-11-28 11:35:29', '2024-12-03 03:22:48');
-INSERT INTO `setting` (`id`, `name`, `category`, `value`, `label`, `remark`, `created_time`, `updated_time`) VALUES (3, 'lang_error_max_threshold', 'check', '0.05', '语种错误标注率阈值', '高于阈值判定不通过', '2024-11-28 11:43:53', '2024-11-28 11:47:03');
-INSERT INTO `setting` (`id`, `name`, `category`, `value`, `label`, `remark`, `created_time`, `updated_time`) VALUES (4, 'lang_detect_exclude_list', 'check', '[\"ku\"]', '语种检测忽略列表', 'cld2会检测冷门语言为un', '2024-11-28 11:44:40', '2024-11-28 19:04:19');
-INSERT INTO `setting` (`id`, `name`, `category`, `value`, `label`, `remark`, `created_time`, `updated_time`) VALUES (5, 'lang_second_max_threshold', 'check', '0.2', '语种检测第二候选语种置信度最大值', '高于阈值判定不通过', '2024-11-28 11:46:57', '2024-11-28 11:47:21');
-INSERT INTO `setting` (`id`, `name`, `category`, `value`, `label`, `remark`, `created_time`, `updated_time`) VALUES (6, 'timeout_seconds', 'run', '300', '超时秒数', '超过该时间未获取到新数据则关闭爬虫', '2024-12-02 19:45:41', '2024-12-03 03:40:45');
-INSERT INTO `setting` (`id`, `name`, `category`, `value`, `label`, `remark`, `created_time`, `updated_time`) VALUES (10, 'timeout_check_interval', 'run', '10', '检查超时的间隔秒数', NULL, '2024-12-02 21:02:52', '2024-12-05 01:02:40');
+INSERT INTO `setting` (`id`, `name`, `category`, `value`, `label`, `description`, `created_time`, `updated_time`) VALUES (1, 'proxy', 'run', 'http://192.168.207.251:8888', '代理', '可回车分隔多个代理', '2024-11-28 11:35:29', '2024-12-03 03:46:26');
+INSERT INTO `setting` (`id`, `name`, `category`, `value`, `label`, `description`, `created_time`, `updated_time`) VALUES (2, 'minimum_news_count', 'check', '2000', '最低新闻量要求', '全站爬取时默认的最低新闻量要求', '2024-11-28 11:35:29', '2024-12-03 03:22:48');
+INSERT INTO `setting` (`id`, `name`, `category`, `value`, `label`, `description`, `created_time`, `updated_time`) VALUES (3, 'lang_error_max_threshold', 'check', '0.05', '语种错误标注率阈值', '高于阈值判定不通过', '2024-11-28 11:43:53', '2024-11-28 11:47:03');
+INSERT INTO `setting` (`id`, `name`, `category`, `value`, `label`, `description`, `created_time`, `updated_time`) VALUES (4, 'lang_detect_exclude_list', 'check', '[\"ku\"]', '语种检测忽略列表', 'cld2会检测冷门语言为un', '2024-11-28 11:44:40', '2024-11-28 19:04:19');
+INSERT INTO `setting` (`id`, `name`, `category`, `value`, `label`, `description`, `created_time`, `updated_time`) VALUES (5, 'lang_second_max_threshold', 'check', '0.2', '语种检测第二候选语种置信度最大值', '高于阈值判定不通过', '2024-11-28 11:46:57', '2024-11-28 11:47:21');
+INSERT INTO `setting` (`id`, `name`, `category`, `value`, `label`, `description`, `created_time`, `updated_time`) VALUES (6, 'timeout_seconds', 'run', '300', '超时秒数', '超过该时间未获取到新数据则关闭爬虫', '2024-12-02 19:45:41', '2024-12-03 03:40:45');
+INSERT INTO `setting` (`id`, `name`, `category`, `value`, `label`, `description`, `created_time`, `updated_time`) VALUES (10, 'timeout_check_interval', 'run', '10', '检查超时的间隔秒数', NULL, '2024-12-02 21:02:52', '2024-12-05 01:02:40');
 COMMIT;
 
 -- ----------------------------
@@ -3603,7 +3599,7 @@ COMMIT;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `audit_created_time`;
 delimiter ;;
-CREATE TRIGGER `audit_created_time` BEFORE INSERT ON `audit` FOR EACH ROW BEGIN
+CREATE TRIGGER `dg_dev_crawler`.`audit_created_time` BEFORE INSERT ON `audit` FOR EACH ROW BEGIN
     SET NEW.created_time = NOW();
 END
 ;;
@@ -3614,7 +3610,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `audit_updated_time_on_insert`;
 delimiter ;;
-CREATE TRIGGER `audit_updated_time_on_insert` BEFORE INSERT ON `audit` FOR EACH ROW SET NEW.updated_time = NOW()
+CREATE TRIGGER `dg_dev_crawler`.`audit_updated_time_on_insert` BEFORE INSERT ON `audit` FOR EACH ROW SET NEW.updated_time = NOW()
 ;;
 delimiter ;
 
@@ -3623,7 +3619,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `audit_updated_time_on_update`;
 delimiter ;;
-CREATE TRIGGER `audit_updated_time_on_update` BEFORE UPDATE ON `audit` FOR EACH ROW SET NEW.updated_time = NOW()
+CREATE TRIGGER `dg_dev_crawler`.`audit_updated_time_on_update` BEFORE UPDATE ON `audit` FOR EACH ROW SET NEW.updated_time = NOW()
 ;;
 delimiter ;
 
@@ -3632,7 +3628,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `country_created_time`;
 delimiter ;;
-CREATE TRIGGER `country_created_time` BEFORE INSERT ON `country` FOR EACH ROW BEGIN
+CREATE TRIGGER `dg_dev_crawler`.`country_created_time` BEFORE INSERT ON `country` FOR EACH ROW BEGIN
     SET NEW.created_time = NOW();
 END
 ;;
@@ -3643,7 +3639,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `country_updated_time_on_insert`;
 delimiter ;;
-CREATE TRIGGER `country_updated_time_on_insert` BEFORE INSERT ON `country` FOR EACH ROW SET NEW.updated_time = NOW()
+CREATE TRIGGER `dg_dev_crawler`.`country_updated_time_on_insert` BEFORE INSERT ON `country` FOR EACH ROW SET NEW.updated_time = NOW()
 ;;
 delimiter ;
 
@@ -3652,7 +3648,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `country_updated_time_on_update`;
 delimiter ;;
-CREATE TRIGGER `country_updated_time_on_update` BEFORE UPDATE ON `country` FOR EACH ROW SET NEW.updated_time = NOW()
+CREATE TRIGGER `dg_dev_crawler`.`country_updated_time_on_update` BEFORE UPDATE ON `country` FOR EACH ROW SET NEW.updated_time = NOW()
 ;;
 delimiter ;
 
@@ -3661,7 +3657,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `language_created_time`;
 delimiter ;;
-CREATE TRIGGER `language_created_time` BEFORE INSERT ON `language` FOR EACH ROW BEGIN
+CREATE TRIGGER `dg_dev_crawler`.`language_created_time` BEFORE INSERT ON `language` FOR EACH ROW BEGIN
     SET NEW.created_time = NOW();
 END
 ;;
@@ -3672,7 +3668,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `language_updated_time_on_insert`;
 delimiter ;;
-CREATE TRIGGER `language_updated_time_on_insert` BEFORE INSERT ON `language` FOR EACH ROW SET NEW.updated_time = NOW()
+CREATE TRIGGER `dg_dev_crawler`.`language_updated_time_on_insert` BEFORE INSERT ON `language` FOR EACH ROW SET NEW.updated_time = NOW()
 ;;
 delimiter ;
 
@@ -3681,7 +3677,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `language_updated_time_on_update`;
 delimiter ;;
-CREATE TRIGGER `language_updated_time_on_update` BEFORE UPDATE ON `language` FOR EACH ROW SET NEW.updated_time = NOW()
+CREATE TRIGGER `dg_dev_crawler`.`language_updated_time_on_update` BEFORE UPDATE ON `language` FOR EACH ROW SET NEW.updated_time = NOW()
 ;;
 delimiter ;
 
@@ -3690,7 +3686,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `setting_created_time`;
 delimiter ;;
-CREATE TRIGGER `setting_created_time` BEFORE INSERT ON `setting` FOR EACH ROW SET NEW.created_time = NOW()
+CREATE TRIGGER `dg_dev_crawler`.`setting_created_time` BEFORE INSERT ON `setting` FOR EACH ROW SET NEW.created_time = NOW()
 ;;
 delimiter ;
 
@@ -3699,7 +3695,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `setting_updated_time_on_insert`;
 delimiter ;;
-CREATE TRIGGER `setting_updated_time_on_insert` BEFORE INSERT ON `setting` FOR EACH ROW SET NEW.updated_time = NOW()
+CREATE TRIGGER `dg_dev_crawler`.`setting_updated_time_on_insert` BEFORE INSERT ON `setting` FOR EACH ROW SET NEW.updated_time = NOW()
 ;;
 delimiter ;
 
@@ -3708,7 +3704,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `setting_updated_time_on_update`;
 delimiter ;;
-CREATE TRIGGER `setting_updated_time_on_update` BEFORE UPDATE ON `setting` FOR EACH ROW SET NEW.updated_time = NOW()
+CREATE TRIGGER `dg_dev_crawler`.`setting_updated_time_on_update` BEFORE UPDATE ON `setting` FOR EACH ROW SET NEW.updated_time = NOW()
 ;;
 delimiter ;
 
@@ -3717,7 +3713,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `audit_created_time_copy1`;
 delimiter ;;
-CREATE TRIGGER `audit_created_time_copy1` BEFORE INSERT ON `task` FOR EACH ROW BEGIN
+CREATE TRIGGER `dg_dev_crawler`.`audit_created_time_copy1` BEFORE INSERT ON `task` FOR EACH ROW BEGIN
     SET NEW.created_time = NOW();
 END
 ;;
@@ -3728,7 +3724,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `audit_updated_time_on_insert_copy1`;
 delimiter ;;
-CREATE TRIGGER `audit_updated_time_on_insert_copy1` BEFORE INSERT ON `task` FOR EACH ROW SET NEW.updated_time = NOW()
+CREATE TRIGGER `dg_dev_crawler`.`audit_updated_time_on_insert_copy1` BEFORE INSERT ON `task` FOR EACH ROW SET NEW.updated_time = NOW()
 ;;
 delimiter ;
 
@@ -3737,7 +3733,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `audit_updated_time_on_update_copy1`;
 delimiter ;;
-CREATE TRIGGER `audit_updated_time_on_update_copy1` BEFORE UPDATE ON `task` FOR EACH ROW SET NEW.updated_time = NOW()
+CREATE TRIGGER `dg_dev_crawler`.`audit_updated_time_on_update_copy1` BEFORE UPDATE ON `task` FOR EACH ROW SET NEW.updated_time = NOW()
 ;;
 delimiter ;
 
@@ -3746,7 +3742,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `user_created_time`;
 delimiter ;;
-CREATE TRIGGER `user_created_time` BEFORE INSERT ON `user` FOR EACH ROW SET NEW.created_time = NOW()
+CREATE TRIGGER `dg_dev_crawler`.`user_created_time` BEFORE INSERT ON `user` FOR EACH ROW SET NEW.created_time = NOW()
 ;;
 delimiter ;
 
@@ -3755,7 +3751,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `user_updated_time_on_insert`;
 delimiter ;;
-CREATE TRIGGER `user_updated_time_on_insert` BEFORE INSERT ON `user` FOR EACH ROW SET NEW.updated_time = NOW()
+CREATE TRIGGER `dg_dev_crawler`.`user_updated_time_on_insert` BEFORE INSERT ON `user` FOR EACH ROW SET NEW.updated_time = NOW()
 ;;
 delimiter ;
 
@@ -3764,7 +3760,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `user_updated_time_on_update`;
 delimiter ;;
-CREATE TRIGGER `user_updated_time_on_update` BEFORE UPDATE ON `user` FOR EACH ROW SET NEW.updated_time = NOW()
+CREATE TRIGGER `dg_dev_crawler`.`user_updated_time_on_update` BEFORE UPDATE ON `user` FOR EACH ROW SET NEW.updated_time = NOW()
 ;;
 delimiter ;
 
@@ -3773,7 +3769,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `website_created_time`;
 delimiter ;;
-CREATE TRIGGER `website_created_time` BEFORE INSERT ON `website` FOR EACH ROW BEGIN
+CREATE TRIGGER `dg_dev_crawler`.`website_created_time` BEFORE INSERT ON `website` FOR EACH ROW BEGIN
     SET NEW.created_time = NOW();
 END
 ;;
@@ -3784,7 +3780,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `website_updated_time_on_insert`;
 delimiter ;;
-CREATE TRIGGER `website_updated_time_on_insert` BEFORE INSERT ON `website` FOR EACH ROW SET NEW.updated_time = NOW()
+CREATE TRIGGER `dg_dev_crawler`.`website_updated_time_on_insert` BEFORE INSERT ON `website` FOR EACH ROW SET NEW.updated_time = NOW()
 ;;
 delimiter ;
 
@@ -3793,7 +3789,7 @@ delimiter ;
 -- ----------------------------
 DROP TRIGGER IF EXISTS `website_updated_time_on_update`;
 delimiter ;;
-CREATE TRIGGER `website_updated_time_on_update` BEFORE UPDATE ON `website` FOR EACH ROW SET NEW.updated_time = NOW()
+CREATE TRIGGER `dg_dev_crawler`.`website_updated_time_on_update` BEFORE UPDATE ON `website` FOR EACH ROW SET NEW.updated_time = NOW()
 ;;
 delimiter ;
 

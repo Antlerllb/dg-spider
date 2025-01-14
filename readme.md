@@ -195,4 +195,10 @@ temp子字段：
 }
 ```
 
+# 4 开发手册
+## 4.1 常用命令
+生成 models.py
+```bash
+sqlacodegen mysql+pymysql://root:123456@localhost:3306/dg_dev_crawler --outfile dg_spider/libs/models.py
+```
 

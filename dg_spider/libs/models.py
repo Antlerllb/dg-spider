@@ -1,10 +1,19 @@
-# coding: utf-8
+# # coding: utf-8
+# from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, JSON, String, text
+# from sqlalchemy.dialects.mysql import CHAR, ENUM, MEDIUMTEXT, TEXT, VARCHAR
+# from sqlalchemy.orm import relationship
+# from sqlalchemy.ext.declarative import declarative_base
+#
+# Base = declarative_base()
+# metadata = Base.metadata
+
+
 from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, JSON, String, text
 from sqlalchemy.dialects.mysql import CHAR, ENUM, MEDIUMTEXT, TEXT, VARCHAR
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from application.factory import db
 
-Base = declarative_base()
+Base = db.Model
 metadata = Base.metadata
 
 
@@ -15,7 +24,7 @@ class Audit(Base):
     user_id = Column(Integer, primary_key=True, nullable=False, comment='作者')
     website_id = Column(Integer, primary_key=True, nullable=False, index=True, comment='网站编号')
     task_id = Column(String(255), primary_key=True, nullable=False)
-    status = Column(ENUM('APPROVED', 'REJECTED', 'IN_PROGRESS'), nullable=False, server_default=text("'IN_PROGRESS'"))
+    result = Column(ENUM('APPROVED', 'REJECTED', 'UNDER_REVIEW'), nullable=False, server_default=text("'UNDER_REVIEW'"))
     code = Column(MEDIUMTEXT, nullable=False, comment='提交源码')
     commit_time = Column(DateTime, nullable=False, comment='提交时间')
     audit_time = Column(DateTime, comment='审核时间')
@@ -53,13 +62,13 @@ class Setting(Base):
     category = Column(String(255))
     value = Column(String(255))
     label = Column(String(255))
-    remark = Column(String(255))
+    description = Column(VARCHAR(255))
     created_time = Column(DateTime)
     updated_time = Column(DateTime)
 
 
 class Task(Base):
-    __tablename__ = 'execute_task'
+    __tablename__ = 'task'
 
     id = Column(VARCHAR(255), primary_key=True, comment='uuid')
     argument = Column(JSON, comment='参数')
@@ -88,22 +97,18 @@ class Website(Base):
     __tablename__ = 'website'
     __table_args__ = {'comment': '0 待分配\\n5 待重写\\n10 开发中\\n20 审核中\\n30 审核通过\\n50 运行中\\n'}
 
-    id = Column(Integer, primary_key=True, comment='id，自增，有索引')
-    country_id = Column(ForeignKey('country.id'), index=True, server_default=text("'0'"), comment='外键：国家表的国家id')
-    language_id = Column(ForeignKey('language.id'), index=True, server_default=text("'0'"), comment='外键：语言表的语言id')
-    user_id = Column(ForeignKey('user.id', ondelete='RESTRICT', onupdate='RESTRICT'), index=True)
+    id = Column(Integer, primary_key=True, nullable=False, comment='id，自增，有索引')
+    name = Column(VARCHAR(255), primary_key=True, nullable=False, comment='爬虫名称')
+    country_id = Column(Integer, index=True, server_default=text("'0'"), comment='外键：国家表的国家id')
+    language_id = Column(Integer, index=True, server_default=text("'0'"), comment='外键：语言表的语言id')
+    user_id = Column(Integer, index=True)
     url = Column(TEXT, comment='网站链接,http://开头')
-    name = Column(TEXT, comment='爬虫名称')
     c_name = Column(TEXT, comment='中文名称')
     remark = Column(TEXT, comment='说明本网站在数据获取中的一些问题')
     level = Column(Integer, server_default=text("'999'"), comment='优先级别')
     status = Column(Enum('PENDING_ASSIGNMENT', 'PENDING_REWRITE', 'IN_PROGRESS', 'UNDER_REVIEW', 'APPROVED', 'RUNNING'), server_default=text("'PENDING_ASSIGNMENT'"))
     created_time = Column(DateTime, comment='每当每行的数据被创建的时候更新现在的时间')
     updated_time = Column(DateTime)
-
-    country = relationship('Country')
-    language = relationship('Language')
-    user = relationship('User')
 
 
 class News(Base):

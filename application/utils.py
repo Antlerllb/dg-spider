@@ -7,7 +7,8 @@ import requests
 from flask import jsonify, g, current_app, request
 
 from application.common import CLIENT_ERROR_CODE
-from application.models import Website, Task
+# from application.models import Website, Task
+from dg_spider.libs.models import Website, Task
 from dg_spider import my_cfg
 from dg_spider.utils.audit_utils import has_json_schema_error
 

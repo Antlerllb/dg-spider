@@ -2,7 +2,8 @@ import json
 from pathlib import Path
 
 from flask import jsonify, g, current_app, Response
-from application.models import Website, Task, Audit
+# from application.models import Website, Task, Audit
+from dg_spider.libs.models import Website, Audit
 from application.utils import request_scrapyd, format_json, execute_bash, validate_common
 from application.factory import my_cfg
 from application.common import CLIENT_ERROR_CODE, USER_ERROR_CODE, DEPLOY_COMMAND
